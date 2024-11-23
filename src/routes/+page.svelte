@@ -46,29 +46,26 @@
 		}
 	};
 
+	const getPostalCode = async (position) => {
+		const { latitude, longitude } = position.coords;
+		const response = await fetch(
+			`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${import.meta.env.VITE_OPENCAGE_API_KEY}`
+		);
+		const data = await response.json();
+		if (data.results && data.results.length > 0)
+			postalCode = data.results[0].components.postcode || '';
+	};
+
 	onMount(() => {
 		if (!navigator.geolocation) {
 			console.error('Geolocation is not supported by this browser.');
 			getLastUsedPostalCode();
-
 			return;
 		}
-		navigator.geolocation.getCurrentPosition(
-			async (position) => {
-				const { latitude, longitude } = position.coords;
-				const response = await fetch(
-					`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${import.meta.env.VITE_OPENCAGE_API_KEY}`
-				);
-				const data = await response.json();
-
-				if (data.results && data.results.length > 0)
-					postalCode = data.results[0].components.postcode || '';
-			},
-			(err) => {
-				console.error('Error getting location:', err);
-				getLastUsedPostalCode();
-			}
-		);
+		navigator.geolocation.getCurrentPosition(getPostalCode, (err) => {
+			console.error('Error getting location:', err);
+			getLastUsedPostalCode();
+		});
 	});
 
 	getLastUsedStores();
