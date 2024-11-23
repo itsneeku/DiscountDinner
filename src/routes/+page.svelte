@@ -6,10 +6,10 @@
 </script>
 
 <section class="flex flex-col justify-center items-center flex-[0.6]">
-	<h1 class="font-normal text-4xl text-center md:text-[2.4rem] w-full">DiscountDinner</h1>
+	<h1 class="text-4xl text-center md:text-[2.4rem] w-full">DiscountDinner</h1>
 
-	<h2 class="font-normal text-base">Tagline here</h2>
-	<p class="font-normal ">Enter your postal code :3</p>
+	<h2>Tagline here</h2>
+	<p>Enter your postal code :3</p>
 	<form method="POST" use:enhance>
 		<Input name="postalCode" class="text-center" placeholder="H1A B2C" />
 	</form>
