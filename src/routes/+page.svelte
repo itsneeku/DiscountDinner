@@ -84,16 +84,8 @@
 				name="postalCode"
 				bind:value={postalCode}
 				placeholder="H1A B2C"
-				class="bg-inherit flex-1 focus:outline-none text-center"
+				class="bg-inherit flex-1 focus:outline-none text-center "
 			/>
-			<Button
-				type="button"
-				class="w-8 h-8 cursor-pointer"
-				onclick={() => (postalCode = '')}
-				aria-label="Clear postal code"
-			>
-				<img src={clear} alt="Clear" class="w-8 h-8" />
-			</Button>
 		</div>
 		{#if form?.stores}
 			{#each [...new Map(form?.stores.map( (store: { merchant: string }) => [store.merchant, store] )).values()] as store}
