@@ -6,6 +6,8 @@ const ENDPOINT_FLYERS_BY_POSTAL_CODE = (postalCode: string) =>
 const ENDPOINT_FLYER_ITEMS = (flyerId: number) =>
 	`https://flyers-ng.flippback.com/api/flipp/flyers/${flyerId}/flyer_items`;
 
+const BLACKLIST = ['Giant Tiger', 'Jean Coutu', 'Keurig', 'Vie En Vert', 'Chaussures Pop'];
+
 export const actions = {
 	getFlyers: async ({ request }) => {
 		const data = await request.formData();
@@ -31,7 +33,8 @@ const getFlyersByPostalCode = async (postalCode: string) => {
 		return (
 			(flyer.categories.includes('Épicerie') || flyer.categories.includes('Groceries')) &&
 			flyer.valid_from.slice(0, 10) <= currentDate &&
-			flyer.valid_to.slice(0, 10) >= currentDate
+			flyer.valid_to.slice(0, 10) >= currentDate &&
+			!BLACKLIST.includes(flyer.merchant)
 		);
 	});
 	return flyers;
