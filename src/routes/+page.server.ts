@@ -16,6 +16,7 @@ export const actions = {
 	},
 	getRecipes: async ({ request }) => {
 		const data = await request.formData();
+		console.log(data);
 		return { status: 200, body: { recipes: [] } };
 		// const flyerItems = [];
 		// flyers.forEach((flyer) => flyerItems.push(getFlyerItemsByFlyerId(flyer.id)));
