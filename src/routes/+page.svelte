@@ -8,7 +8,7 @@
 	import { Label } from '$lib/components/ui/label';
 	import { onMount } from 'svelte';
 	import type { ActionData } from './$types';
-	import github from '$lib/images/x-thin-svgrepo-com.svg';
+	import clear from '$lib/images/x-thin-svgrepo-com.svg';
 	let postalCode = $state('');
 	let selectedStores = $state<string[]>([]);
 	$effect(() => {
@@ -57,13 +57,13 @@
 	<h2>Tagline here</h2>
 	<p>Enter your postal code :3</p>
 	<form method="POST" use:enhance action="?/getFlyers">
-		<div class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-300" style="background-color: #f3dfdf;">
+		<div class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-30" style="background-color: #f3dfdf;">
 			<input
 			  type="text"
 			  bind:value={postalCode}
 			  placeholder="H1A B2C"
 			  class="bg-inherit flex-1 focus:outline-none"/>
-			<img src={github} alt="GitHub" class="w-8 h-8 cursor-pointer" on:click={() => (postalCode = '')} />
+			<img src={clear} alt="Clear" class="w-8 h-8 cursor-pointer" on:click={() => (postalCode = '')} />
 		  </div>
 		{#if form?.stores}
 			{#each [...new Map(form.stores.map((store: { merchant: string }) => [store.merchant, store])).values()] as store}
