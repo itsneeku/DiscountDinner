@@ -1,7 +1,6 @@
 <script>
 	import Header from './Header.svelte';
 	import '../app.css';
-	import github from '$lib/images/github.svg';
 	let { children } = $$props;
 </script>
 
@@ -17,9 +16,5 @@
 	</main>
 	<footer class="flex justify-center items-center p-3 sm:px-0">
 		<p>:3 for CodeJam14</p>
-		<a href="https://github.com/itsneeku/DiscountDinner" class="p-2">
-			<img src={github} alt="GitHub" class="w-8 h-8" />
-		</a>
 	</footer>
-
 </div>
