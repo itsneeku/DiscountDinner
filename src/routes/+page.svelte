@@ -1,24 +1,33 @@
 <script lang="ts">
 	let { form }: { form: ActionData } = $props();
+	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
-	import { Input } from '$lib/components/ui/input';
-	import type { ActionData } from './$types';
-	import { onMount } from 'svelte';
-	import { Checkbox } from '$lib/components/ui/checkbox';
-	import { Label } from '$lib/components/ui/label';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { Input } from '$lib/components/ui/input';
+	import { Label } from '$lib/components/ui/label';
+	import { onMount } from 'svelte';
+	import type { ActionData } from './$types';
 	let postalCode = $state('');
 	let selectedStores = $state<string[]>([]);
+	$effect(() => {
+		localStorage.setItem('selectedStores', JSON.stringify(selectedStores));
+	});
 	$inspect(form);
 	$inspect(selectedStores);
 
-	const addStore = (store) => {
-		selectedStores = [...selectedStores, store];
+	const addStore = (store) => (selectedStores = [...selectedStores, store]);
+
+	const removeStore = (store) => (selectedStores = selectedStores.filter((s) => s !== store));
+
+	const getLastUsedStores = () => {
+		if (!browser) return;
+		const lastUsedStores = localStorage.getItem('selectedStores');
+		if (lastUsedStores) {
+			selectedStores = JSON.parse(lastUsedStores);
+		}
 	};
 
-	const removeStore = (store) => {
-		selectedStores = selectedStores.filter((s) => s !== store);
-	};
 	onMount(() => {
 		if (!navigator.geolocation) {
 			console.error('Geolocation is not supported by this browser.');
@@ -38,6 +47,8 @@
 			(err) => console.error('Error getting location:', err)
 		);
 	});
+
+	getLastUsedStores();
 </script>
 
 <section class="flex flex-col justify-center items-center flex-[0.6]">
