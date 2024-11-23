@@ -54,16 +54,15 @@
 
 <section class="flex flex-col justify-center items-center flex-[0.6]">
 	<h1 class="text-4xl text-center md:text-[2.4rem] w-full">DiscountDinner</h1>
-//f3dfdf
 	<h2>Tagline here</h2>
 	<p>Enter your postal code :3</p>
 	<form method="POST" use:enhance action="?/getFlyers">
-		<div class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-300 focus-within:ring-2 focus-within:ring-pink-300">
+		<div class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-300" style="background-color: #f3dfdf;">
 			<input
 			  type="text"
 			  bind:value={postalCode}
 			  placeholder="H1A B2C"
-			  class="flex-1 focus:outline-none"/>
+			  class="bg-inherit flex-1 focus:outline-none"/>
 			<img src={github} alt="GitHub" class="w-8 h-8 cursor-pointer" on:click={() => (postalCode = '')} />
 		  </div>
 		{#if form?.stores}
