@@ -59,7 +59,7 @@
 	<form method="POST" use:enhance action="?/getFlyers">
 		<Input name="postalCode" value={postalCode} class="text-center" placeholder="H1A B2C" />
 		{#if form?.stores}
-			{#each [...new Map(form.stores.map((store) => [store.merchant, store])).values()] as store}
+			{#each [...new Map(form.stores.map((store: { merchant: string }) => [store.merchant, store])).values()] as store}
 				{@const checked = selectedStores.includes(store.merchant)}
 				<div>
 					<Checkbox
