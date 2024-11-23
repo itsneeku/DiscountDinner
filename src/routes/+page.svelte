@@ -1,31 +1,30 @@
 <script lang="ts">
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcomeFallback from '$lib/images/svelte-welcome.png';
+	import { Input } from '$lib/components/ui/input';
+	import type { ActionData } from './sverdle/$types';
+	let postalCode = $state('A1B2C3');
+	let { form }: { form: ActionData } = $props();
+
+	
 </script>
 
 <svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
+	<title>DiscountDinner</title>
+	<meta name="description" content="DiscountDinner" />
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcomeFallback} alt="Welcome" />
-			</picture>
-		</span>
+	<h1>DiscountDinner</h1>
 
-		to your new<br />SvelteKit app
-	</h1>
+	<h2>Tagline here</h2>
+	<form method="POST">
+		<Input bind:value={postalCode} />
+		<label
+			>Postal Code
+			<input name="postalCode" />
+		</label>
 
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
+		<button>Search</button>
+	</form>
 </section>
 
 <style>
