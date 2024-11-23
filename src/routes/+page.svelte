@@ -12,14 +12,31 @@
 	let postalCode = $state('');
 	let selectedStores = $state<string[]>([]);
 	$effect(() => {
+		localStorage.setItem('postalCode', postalCode);
 		localStorage.setItem('selectedStores', JSON.stringify(selectedStores));
 	});
+
 	$inspect(form);
 	$inspect(selectedStores);
 
-	const addStore = (store) => (selectedStores = [...selectedStores, store]);
+	const formEnhance = () => {
+		return async ({ update }) => {
+			update({ reset: false });
+		};
+	};
+	const toggleStoreSelection = (store: string, isSelected: boolean) => {
+		selectedStores = isSelected
+			? [...selectedStores, store]
+			: selectedStores.filter((s) => s !== store);
+	};
 
-	const removeStore = (store) => (selectedStores = selectedStores.filter((s) => s !== store));
+	const getLastUsedPostalCode = () => {
+		if (!browser) return;
+		const lastUsedPostalCode = localStorage.getItem('postalCode');
+		if (lastUsedPostalCode) {
+			postalCode = lastUsedPostalCode;
+		}
+	};
 
 	const getLastUsedStores = () => {
 		if (!browser) return;
@@ -32,6 +49,8 @@
 	onMount(() => {
 		if (!navigator.geolocation) {
 			console.error('Geolocation is not supported by this browser.');
+			getLastUsedPostalCode();
+
 			return;
 		}
 		navigator.geolocation.getCurrentPosition(
@@ -45,7 +64,10 @@
 				if (data.results && data.results.length > 0)
 					postalCode = data.results[0].components.postcode || '';
 			},
-			(err) => console.error('Error getting location:', err)
+			(err) => {
+				console.error('Error getting location:', err);
+				getLastUsedPostalCode();
+			}
 		);
 	});
 
@@ -56,39 +78,45 @@
 	<h1 class="text-4xl text-center md:text-[2.4rem] w-full">DiscountDinner</h1>
 	<h2>Tagline here</h2>
 	<p>Enter your postal code :3</p>
-	<form method="POST" use:enhance action="?/getFlyers">
-		<div class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-30" style="background-color: #f3dfdf;">
-			<input
-			  type="text"
-			  bind:value={postalCode}
-			  placeholder="H1A B2C"
-			  class="bg-inherit flex-1 focus:outline-none"/>
-			<img src={clear} alt="Clear" class="w-8 h-8 cursor-pointer" on:click={() => (postalCode = '')} />
-		  </div>
+	<form method="POST" use:enhance={formEnhance} action="?/getFlyers">
+		<div
+			class="flex items-center space-x-2 px-4 py-2 rounded-full border border-gray-30"
+			style="background-color: #f3dfdf;"
+		>
+			<Input
+				name="postalCode"
+				bind:value={postalCode}
+				placeholder="H1A B2C"
+				class="bg-inherit flex-1 focus:outline-none text-center"
+			/>
+			<Button
+				type="button"
+				class="w-8 h-8 cursor-pointer"
+				onclick={() => (postalCode = '')}
+				aria-label="Clear postal code"
+			>
+				<img src={clear} alt="Clear" class="w-8 h-8" />
+			</Button>
+		</div>
 		{#if form?.stores}
-			{#each [...new Map(form.stores.map((store: { merchant: string }) => [store.merchant, store])).values()] as store}
-				{@const checked = selectedStores.includes(store.merchant)}
+			{#each [...new Map(form?.stores.map( (store: { merchant: string }) => [store.merchant, store] )).values()] as store}
+				{@const checked = selectedStores.includes((store as { merchant: string }).merchant)}
+				{@const merchant = (store as { merchant: string }).merchant}
 				<div>
 					<Checkbox
-						id={store.merchant}
+						id={merchant}
 						{checked}
-						value={store.merchant}
-						onCheckedChange={(v) => {
-							if (v) {
-								addStore(store.merchant);
-							} else {
-								removeStore(store.merchant);
-							}
-						}}
+						value={merchant}
+						onCheckedChange={(v) => toggleStoreSelection(merchant, v)}
 					/>
 					<Label
-						for={store.merchant}
+						for={merchant}
 						class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>{store.merchant}</Label
+						>{merchant}</Label
 					>
 				</div>
 			{/each}
-			<Button formaction="?/getRecipes" type="submit" class="mt-4">Get flyers</Button>
+			<Button formaction="?/getRecipes" class="mt-4">Get flyers</Button>
 		{/if}
 	</form>
 </section>
