@@ -32,13 +32,10 @@
 				);
 				const data = await response.json();
 
-				if (data.results && data.results.length > 0) {
+				if (data.results && data.results.length > 0)
 					postalCode = data.results[0].components.postcode || '';
-				}
 			},
-			(err) => {
-				console.error('Error getting location:', err);
-			}
+			(err) => console.error('Error getting location:', err)
 		);
 	});
 </script>
