@@ -40,6 +40,9 @@ const getFlyersByPostalCode = async (postalCode: string) => {
 			!BLACKLIST.includes(flyer.merchant)
 		);
 	});
+	flyers.sort((a: { merchant: string }, b: { merchant: string }) =>
+		a.merchant.localeCompare(b.merchant)
+	);
 	return flyers;
 };
 
