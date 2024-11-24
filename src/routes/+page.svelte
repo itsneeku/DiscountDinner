@@ -95,17 +95,17 @@
 
 <section class="flex flex-col items-center">
 	<div class="flex flex-col items-center">
-		<h1 class="text-center w-screen text-[13vw] tracking-tight sm:text-8xl">DiscountDinner</h1>
-		<h2 class="text-center w-screen text-[3vw] tracking-tight sm:text-base">
+		<h1 class="text-center w-screen text-[13vw] tracking-tight sm:text-7xl">DiscountDinner</h1>
+		<h2 class="text-center w-screen tracking-tight text-[3vw] min-[440px]:text-base">
 			For the broke, the busy, and those who burn pasta.
 		</h2>
 	</div>
-	<div class="flex flex-col flex-1 text-center text-s transition-all pt-16">
+	<div class="flex flex-col flex-1 text-center text-s transition-all">
 		<form
 			method="POST"
 			use:enhance={formEnhance}
 			action="?/getFlyers"
-			class="flex w-screen px-8 max-w-sm sm:max-w-lg flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0"
+			class="flex w-screen px-8 max-w-sm sm:max-w-lg flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 pt-16 pb-4"
 		>
 			<Card.Root class="h-28 flex flex-col justify-between ">
 				<Card.Header class="pb-0 text-left sm:text-center">
@@ -148,10 +148,28 @@
 
 		<form method="POST" use:enhance={formEnhance} action="?/getRecipes">
 			{#if form?.stores}
-				{#each [...new Map(form?.stores.map( (store: { merchant: string }) => [store.merchant, store] )).values()] as store}
-					{@const checked = selectedStores.includes((store as { merchant: string }).merchant)}
-					{@const merchant = (store as { merchant: string }).merchant}
-					<div>
+				<div class="flex w-screen px-8 max-w-sm flex-row flex-wrap justify-between">
+					{#each [...new Map(form?.stores.map( (store: { merchant: string }) => [store.merchant, store] )).values()] as store, i}
+						{@const checked = selectedStores.includes((store as { merchant: string }).merchant)}
+						{@const merchant = (store as { merchant: string }).merchant}
+						{@const merchantLogo = (store as { merchant_logo: string }).merchant_logo}
+						<Card.Root
+							class="w-[47%] flex flex-col aspect-square mb-4 border-8 transition-all rounded-xl hover:opacity-70 {i %
+								2 ===
+							0
+								? 'mr-2'
+								: 'ml-2'}  {checked ? 'opacity-100 border-secondary' : 'opacity-40'} bg-white"
+							onclick={() => toggleStoreSelection(merchant, !checked)}
+						>
+							<div
+								class="w-full h-full bg-contain bg-center bg-no-repeat border-8 border-transparent"
+								style="background-image: url({merchantLogo});"
+							></div>
+						</Card.Root>
+
+						<!-- 							style="background-image: url({merchantLogo});"
+ -->
+						<!--<div>
 						<Checkbox
 							id={merchant}
 							{checked}
@@ -171,6 +189,12 @@
 				{/each}
 				<input type="hidden" name="postalCode" value={postalCode} />
 				<Button type="submit" class="mt-4">Get flyers</Button>
+=======
+					</div> -->
+					{/each}
+				</div>
+
+				<Button type="submit" class="mt-4">Get recipes</Button>
 			{/if}
 		</form>
 	</div>

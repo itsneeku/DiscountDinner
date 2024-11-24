@@ -6,7 +6,7 @@
 @layer base {
 	:root {
 		font-family: 'Inter', sans-serif;
-		--background: 276 100% 95%;
+		--background: 276 100% 99%;
 		--foreground: 276 5% 10%;
 		--card: 276 50% 90%;
 		--card-foreground: 276 5% 15%;
