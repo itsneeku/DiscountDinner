@@ -2,6 +2,7 @@
 	import Header from './Header.svelte';
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.css';
+	import Footer from './Footer.svelte';
 	let { children } = $props();
 </script>
 
@@ -10,13 +11,11 @@
 	<meta name="description" content="DiscountDinner" />
 </svelte:head>
 
-<div class="h-svh p-4">
+<div class="h-svh p-4 flex flex-col bg-background">
 	<ModeWatcher />
 	<Header />
-	<main class="flex-1 flex flex-col p-4 w-full max-w-4xl mx-auto box-border">
+	<main class="pt-20 w-full flex-1">
 		{@render children?.()}
 	</main>
-	<footer class="flex justify-center items-center p-3 sm:px-0">
-		<p>:3 for CodeJam14</p>
-	</footer>
+	<Footer />
 </div>

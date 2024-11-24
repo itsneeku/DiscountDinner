@@ -1,4 +1,4 @@
-import { fail, type Actions } from '@sveltejs/kit';
+import { fail, isActionFailure, type Actions } from '@sveltejs/kit';
 
 const ENDPOINT_FLYERS_BY_POSTAL_CODE = (postalCode: string) =>
 	`https://flyers-ng.flippback.com/api/flipp/data?postal_code=${postalCode}&sid=${Math.random().toString().slice(2, 10)}`;
@@ -13,7 +13,7 @@ export const actions = {
 		const data = await request.formData();
 		const postalCode = data.get('postalCode') as string;
 		const flyers = await getFlyersByPostalCode(postalCode);
-
+		if (isActionFailure(flyers)) return flyers;
 		return { stores: flyers };
 	},
 	getRecipes: async ({ request }) => {
@@ -28,6 +28,9 @@ export const actions = {
 const getFlyersByPostalCode = async (postalCode: string) => {
 	const response = await fetch(ENDPOINT_FLYERS_BY_POSTAL_CODE(postalCode));
 	const data = await response.json();
+	if (response.status !== 200 || data.error) return fail(400, { error: true, postalCode });
+	console.log(data);
+	console.log(response);
 	const currentDate = new Date().toISOString().slice(0, 10);
 	const flyers = data.flyers.filter((flyer) => {
 		return (
