@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@google/generative-ai':
+        specifier: ^0.21.0
+        version: 0.21.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      generative-ai:
+        specifier: ^0.1.4
+        version: 0.1.4
       mode-watcher:
         specifier: ^0.5.0
         version: 0.5.0(svelte@5.2.7)
@@ -284,6 +290,10 @@ packages:
 
   '@fontsource/fira-mono@5.1.0':
     resolution: {integrity: sha512-6+nftSKApXyN0I9FC5GJuG5TUCh+in5OehtrXRIsHJvq38Pm//oA1kZZYNdXv99JYzLzJ3lzsTAavmS+xGLGDw==}
+
+  '@google/generative-ai@0.21.0':
+    resolution: {integrity: sha512-7XhUbtnlkSEZK15kN3t+tzIMxsbKm/dSkKBFalj+20NvPKe1kBY7mR2P7vuijEn+f06z5+A8bVGKO0v39cr6Wg==}
+    engines: {node: '>=18.0.0'}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -963,6 +973,10 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  generative-ai@0.1.4:
+    resolution: {integrity: sha512-LEzvbciabASxQFtJ3sGw/ePjPwl2F++xPEjXZ404vM78OSWY4TWSOw9jwDfU61onm2oQEIxrXqQidDQaOxUegA==}
+    engines: {node: '>=18.0.0'}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -1755,6 +1769,8 @@ snapshots:
 
   '@fontsource/fira-mono@5.1.0': {}
 
+  '@google/generative-ai@0.21.0': {}
+
   '@humanfs/core@0.19.1': {}
 
   '@humanfs/node@0.16.6':
@@ -2455,6 +2471,8 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
+
+  generative-ai@0.1.4: {}
 
   glob-parent@5.1.2:
     dependencies:

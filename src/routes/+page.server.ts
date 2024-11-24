@@ -4,9 +4,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 dotenv.config();
 
-const secret : string = process.env.GEMINI_API_KEY || ''; 
+const secret: string = process.env.GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(secret);
-const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 const ENDPOINT_FLYERS_BY_POSTAL_CODE = (postalCode: string) =>
 	`https://flyers-ng.flippback.com/api/flipp/data?postal_code=${postalCode}&sid=${Math.random().toString().slice(2, 10)}`;
@@ -19,75 +19,83 @@ const BLACKLIST = ['Giant Tiger', 'Jean Coutu', 'Keurig', 'Vie En Vert', 'Chauss
 export const actions = {
 	getFlyers: async ({ request }) => {
 		const data = await request.formData();
+
 		const postalCode = data.get('postalCode') as string;
 		const flyers = await getFlyersByPostalCode(postalCode);
 		if (isActionFailure(flyers)) return flyers;
 		return { stores: flyers, postalCode };
 	},
 	getRecipes: async ({ request }) => {
-		console.log('getRecipes start');
 		try {
-		  const data = await request.formData();
-		  const selectedStores = data.getAll('selectedStores') as string[];
-		  const postalCode = data.get('postalCode') as string;
+			const data = await request.formData();
+			const flyerIdsByStore = JSON.parse(data.get('flyerIdsByStore') as string);
+			console.log(flyerIdsByStore);
+			if (Object.keys(flyerIdsByStore).length === 0)
+				return fail(400, { error: 'Pick a store boy' });
 
-		  console.log('Selected Stores:', selectedStores);
-		  console.log('Postal Code:', postalCode);
-	  
-		  if (!selectedStores.length || !postalCode) {
-			return fail(400, { error: 'Pick a store boy' });
-		  }
-	  
-		  const flyers = await getFlyersByPostalCode(postalCode);
-		  const selectedFlyers = flyers.filter((flyer) =>
-			selectedStores.includes(flyer.merchant)
-		  );
-	  
-		  let allFlyerItems = [];
-		  for (const flyer of selectedFlyers) {
-			const items = await getFlyerItemsByFlyerId(flyer.id);
-			if (Array.isArray(items)) {
-			  allFlyerItems = allFlyerItems.concat(items);
-			} 
-		  }
+			const allFlyerItems: any[] = [];
+			for (const store in flyerIdsByStore) {
+				console.log(store, flyerIdsByStore[store]);
+				const flyerId = flyerIdsByStore[store];
+				const items = await getFlyerItemsByFlyerId(flyerId);
+				console.log(items);
+				items.forEach((item) => {
+					allFlyerItems.push({ name: item.name, price: item.price, store });
+				});
+			}
+			console.log('allFlyerItems', allFlyerItems);
 
-		  if (allFlyerItems.length === 0) {
-			throw new Error('No flyer items');
-		  }
+			if (allFlyerItems.length === 0) {
+				return fail(400, { error: 'No items found' });
+			}
 
-		  const validItems = allFlyerItems.filter( // some items price is ''
-			(item) => item.price && !isNaN(parseFloat(item.price))
-		  );
-	  
-		  const topCheapestItems = Array.from(
-			new Map(validItems.map(item => [item.name, item])).values()
-		  )
-			.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
-			.slice(0, 10);
+			const validItems = allFlyerItems.filter(
+				(item) => item.price && !isNaN(parseFloat(item.price)) && item.price > 0
+			);
 
-		const formattedIngredients = topCheapestItems
-        .map((item: any) => `${item.name} - $${item.price}`)
-        .join(', ');
-  
-		const prompt = `You are a professional chef. Suggest three recipes using any combination of the following discounted ingredients: ${formattedIngredients}. Provide only the recipe names and the necessary ingredients. Compute the total cost also.`;
+			const topCheapestItems = Array.from(
+				new Map(validItems.map((item) => [item.name, item])).values()
+			)
+				.sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+				.slice(0, 20);
 
-		const recipeResponse = await model.generateContent(prompt);
-		const recipe = recipeResponse.response.text();
-			  
-		  return { stores: selectedFlyers, recipes: recipe };
+			console.log('topCheapestItems', topCheapestItems);
+
+			const prompt = `
+			### Instruction ###
+			You are a chef specializing in cheap meals. You have access to the provided input ingredients from the given stores. Your goal is to create 3 recipes using primarily these ingredients. 
+
+			### Input Ingredients ###
+			${JSON.stringify(topCheapestItems)}
+
+			### Output Format - Array of JSON ###
+			[
+				{
+				recipeName: <recipe_name>,
+				ingredients: [
+					{ingredient: <ingredient_name>, store: <ingredient's_store>}
+				],
+				steps: [<step_1>, <step_2>, ...],
+				estimatedCost: <estimated_cost>
+				},
+			...]			
+			`;
+
+			const recipeResponse = await model.generateContent(prompt);
+			const recipe = recipeResponse.response.text();
+
+			return { recipes: recipe };
 		} catch (error) {
-		  console.error('Error in getRecipes:', error);
-		  return fail(500, { error });
+			console.error('Error in getRecipes:', error);
+			return fail(500, { error });
 		}
-	  },
+	}
 } satisfies Actions;
 
 const getFlyersByPostalCode = async (postalCode: string) => {
 	const response = await fetch(ENDPOINT_FLYERS_BY_POSTAL_CODE(postalCode));
 	const data = await response.json();
 	if (response.status !== 200 || data.error) return fail(400, { error: true, postalCode });
-	console.log(data);
-	console.log(response);
 	const currentDate = new Date().toISOString().slice(0, 10);
 	const flyers = data.flyers.filter((flyer) => {
 		return (

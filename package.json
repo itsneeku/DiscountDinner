@@ -39,7 +39,9 @@
 		"vite-plugin-mkcert": "^1.17.6"
 	},
 	"dependencies": {
+		"@google/generative-ai": "^0.21.0",
 		"dotenv": "^16.4.5",
+		"generative-ai": "^0.1.4",
 		"mode-watcher": "^0.5.0"
 	}
 }

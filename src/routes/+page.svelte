@@ -4,27 +4,13 @@
 	import { browser } from '$app/environment';
 	import { enhance } from '$app/forms';
 	import { Button } from '$lib/components/ui/button';
-	import { Checkbox } from '$lib/components/ui/checkbox';
 	import { Input } from '$lib/components/ui/input';
-	import { Label } from '$lib/components/ui/label';
 	import { onMount } from 'svelte';
 	import ArrowRight from 'lucide-svelte/icons/arrow-right';
 
 	import type { ActionData } from './$types';
 	let postalCode = $state('');
 
-	// $effect(() => {
-	// 	if (form?.postalCode) {
-	// 		postalCode = form.postalCode;
-	// 	}
-	// });
-	// $effect(() => {
-	// 	postalCode = postalCode.toUpperCase();
-	// 	// add a space after the first 3 characters
-	// 	if (postalCode.length > 3) {
-	// 		postalCode = postalCode.slice(0, 3) + ' ' + postalCode.slice(3);
-	// 	}
-	// });
 	let recipes = $state('');
 	$effect(() => {
 		if (form?.recipes) {
@@ -40,11 +26,20 @@
 	$inspect(form);
 	$inspect(selectedStores);
 
-	const formEnhance = () => {
+	const useEnhance = ({ formData }) => {
+		const stores = {};
+		form?.stores?.forEach((store) => {
+			if (selectedStores.includes(store.merchant)) {
+				if (!stores[store.merchant]) stores[store.merchant] = [];
+				stores[store.merchant].push(store.id);
+			}
+		});
+		formData.append('flyerIdsByStore', JSON.stringify(stores));
 		return async ({ update }: { update: (options: { reset: boolean }) => void }) => {
 			update({ reset: false });
 		};
 	};
+
 	const toggleStoreSelection = (store: string, isSelected: boolean) => {
 		selectedStores = isSelected
 			? [...selectedStores, store]
@@ -103,7 +98,7 @@
 	<div class="flex flex-col flex-1 text-center text-s transition-all">
 		<form
 			method="POST"
-			use:enhance={formEnhance}
+			use:enhance={useEnhance}
 			action="?/getFlyers"
 			class="flex w-screen px-8 max-w-sm sm:max-w-lg flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0 pt-16 pb-4"
 		>
@@ -146,7 +141,7 @@
 			</button>
 		</form>
 
-		<form method="POST" use:enhance={formEnhance} action="?/getRecipes">
+		<form method="POST" use:enhance={useEnhance} action="?/getRecipes">
 			{#if form?.stores}
 				<div class="flex w-screen px-8 max-w-sm flex-row flex-wrap justify-between">
 					{#each [...new Map(form?.stores.map( (store: { merchant: string }) => [store.merchant, store] )).values()] as store, i}
@@ -166,35 +161,10 @@
 								style="background-image: url({merchantLogo});"
 							></div>
 						</Card.Root>
-
-						<!-- 							style="background-image: url({merchantLogo});"
- -->
-						<!--<div>
-						<Checkbox
-							id={merchant}
-							{checked}
-							value={merchant}
-							onCheckedChange={(v) => toggleStoreSelection(merchant, v)}
-						/>
-						<Label
-							for={merchant}
-							class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-						>
-							{merchant}
-						</Label>
-						{#if checked}
-							<input type="hidden" name="selectedStores" value={merchant} />
-						{/if}
-					</div>
-				{/each}
-				<input type="hidden" name="postalCode" value={postalCode} />
-				<Button type="submit" class="mt-4">Get flyers</Button>
-=======
-					</div> -->
 					{/each}
 				</div>
 
-				<Button type="submit" class="mt-4">Get recipes</Button>
+				<Button class="mt-4" type="submit">Get recipes</Button>
 			{/if}
 		</form>
 	</div>
@@ -202,9 +172,7 @@
 	{#if recipes}
 		<section class="mt-8 p-4 border rounded bg-gray-100 w-full max-w-2xl">
 			<h2 class="text-2xl mb-2">Your Generated Recipe</h2>
-			<div class="recipe-content">
-				{@html recipes}
-			</div>
+			{@html recipes}
 		</section>
 	{/if}
 </section>
