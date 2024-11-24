@@ -239,7 +239,7 @@
 			<Card.Root class="  max-w-sm sm:max-w-md px-4 mb-6 pb-8">
 				<Card.Header>
 					<Card.Title>{recipeName}</Card.Title>
-					<Card.Description class="py-2">${estimatedCost}</Card.Description>
+					<Card.Description class="py-2 px-1">${estimatedCost}</Card.Description>
 				</Card.Header>
 				<Card.Content class="px-2">
 					<!-- Group ingredients by matching store -->

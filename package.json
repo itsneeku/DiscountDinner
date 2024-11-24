@@ -15,6 +15,7 @@
 		"@fontsource/fira-mono": "^5.0.0",
 		"@neoconfetti/svelte": "^2.0.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-vercel": "^5.4.8",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"autoprefixer": "^10.4.20",
@@ -42,6 +43,7 @@
 		"@google/generative-ai": "^0.21.0",
 		"dotenv": "^16.4.5",
 		"generative-ai": "^0.1.4",
-		"mode-watcher": "^0.5.0"
+		"mode-watcher": "^0.5.0",
+		"vercel": "^39.1.1"
 	}
 }
