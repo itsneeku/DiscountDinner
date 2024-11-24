@@ -8,7 +8,6 @@
 	import { Label } from '$lib/components/ui/label';
 	import { onMount } from 'svelte';
 	import type { ActionData } from './$types';
-	import clear from '$lib/images/x-thin-svgrepo-com.svg';
 	let postalCode = $state('');
 	let selectedStores = $state<string[]>([]);
 	$effect(() => {
