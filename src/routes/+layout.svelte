@@ -11,7 +11,7 @@
 	<meta name="description" content="DiscountDinner" />
 </svelte:head>
 
-<div class="h-svh p-4 flex flex-col bg-background">
+<div class="h-svh p-4 flex flex-col ">
 	<ModeWatcher />
 	<Header />
 	<main class="pt-20 w-full flex-1">
