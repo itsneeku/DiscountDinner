@@ -12,6 +12,12 @@
 
 	import type { ActionData } from './$types';
 	let postalCode = $state('');
+
+	// $effect(() => {
+	// 	if (form?.postalCode) {
+	// 		postalCode = form.postalCode;
+	// 	}
+	// });
 	// $effect(() => {
 	// 	postalCode = postalCode.toUpperCase();
 	// 	// add a space after the first 3 characters
@@ -19,6 +25,12 @@
 	// 		postalCode = postalCode.slice(0, 3) + ' ' + postalCode.slice(3);
 	// 	}
 	// });
+	let recipes = $state('');
+	$effect(() => {
+		if (form?.recipes) {
+			recipes = form.recipes;
+		}
+	});
 	let selectedStores = $state<string[]>([]);
 	$effect(() => {
 		if (postalCode.length == 7) localStorage.setItem('postalCode', postalCode);
@@ -152,10 +164,23 @@
 						>
 							{merchant}
 						</Label>
+						{#if checked}
+							<input type="hidden" name="selectedStores" value={merchant} />
+						{/if}
 					</div>
 				{/each}
+				<input type="hidden" name="postalCode" value={postalCode} />
 				<Button type="submit" class="mt-4">Get flyers</Button>
 			{/if}
 		</form>
 	</div>
+
+	{#if recipes}
+		<section class="mt-8 p-4 border rounded bg-gray-100 w-full max-w-2xl">
+			<h2 class="text-2xl mb-2">Your Generated Recipe</h2>
+			<div class="recipe-content">
+				{@html recipes}
+			</div>
+		</section>
+	{/if}
 </section>
