@@ -10,9 +10,8 @@
 	<meta name="description" content="DiscountDinner" />
 </svelte:head>
 
-<div class="flex flex-col min-h-screen m-0 bg-fixed">
+<div class="h-svh p-4">
 	<ModeWatcher />
-
 	<Header />
 	<main class="flex-1 flex flex-col p-4 w-full max-w-4xl mx-auto box-border">
 		{@render children?.()}
