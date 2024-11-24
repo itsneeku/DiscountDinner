@@ -119,7 +119,8 @@
 			</Card.Root>
 			<button disabled={Boolean(postalCode == '' || isValidationError())}>
 				<Card.Root
-					class=" sm:h-28 flex flex-row sm:flex-col justify-between transition-all {postalCode == ''
+					class=" sm:h-28 flex flex-row sm:flex-col justify-between transition-all {postalCode ==
+						'' || isValidationError()
 						? 'opacity-40 cursor-not-allowed'
 						: 'opacity-100 cursor-pointer'}"
 				>
